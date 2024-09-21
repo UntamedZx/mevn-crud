@@ -24,7 +24,7 @@ const routes = [
 	{
 		path: "/user-dashboard",
 		component: UserDashboard,
-		meta: { requiresAuth: true, role: "user" },
+		meta: { requiresAuth: true, },
 	},
 	{
 		path: "/admin-dashboard",
@@ -60,6 +60,11 @@ router.beforeEach((to, from, next) => {
 		} else if (userRole === "user") {
 			return next("/user-dashboard");
 		}
+	}
+
+	// Normal users trying to access admin-dashboard are blocked
+	if (to.meta.role === "admin" && userRole !== "admin") {
+		return next("/login");
 	}
 
 	// If none of the conditions match, proceed as normal
